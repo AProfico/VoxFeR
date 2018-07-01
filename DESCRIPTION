@@ -1,0 +1,17 @@
+Package: VoxFeR
+Type: Package
+Title: Tools for Finite Element and Geometric Morphometric analyses
+Version: 0.99
+Author: Antonio Profico, Paul O'Higgins
+Maintainer: Antonio Profico <antonio.profico@uniroma1.it> 
+Description: Tools for Finite Element and Geometric Morphometric analyses
+Depends:
+    R (>= 3.4.0)
+Imports:
+    Morpho (>= 2.5.0),
+    rgl (>= 0.93.0),
+    Rvcg (>= 0.17)
+License: GPL-2
+Encoding: UTF-8
+LazyLoad: yes
+RoxygenNote: 6.0.1.9000
