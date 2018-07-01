@@ -7,21 +7,46 @@
 #' @param dimx numeric: x voxel size.
 #' @param dimy numeric: y voxel size.
 #' @param dimz numeric: z voxel size.
+#' @param from logical: if TRUE through an interactive way select the reference label.
+#' @param to logical: if TRUE through an interactive way select the reference label
+#' @param GPA logical: if TRUE a GPA step will be performed
 #' @author Antonio Profico, Paul O'Higgins
 #' @export
 
 export_displacement<-function(pca_mods_object, magnification=NULL,
-                              dimx=0,dimy=0,dimz=0){
-  
-  cat("Actually, the function export_displacemnt","\n")
-  cat("works fine only using the entire model","\n")
-  cat("So, be careful. Check that","\n")
-  cat("the argument subsel is set on FALSE","\n")
-  cat("when you run the function pca_mods","\n")
-  cat("As soon as possible I'll write a function","\n")
-  cat("to save the displacement file","\n")
-  cat("when only a subselection of voxels is requested","\n")
-  
+                              dimx=0,dimy=0,dimz=0,
+                              from=NULL,to=NULL,GPA=NULL){
+  if(from==TRUE & to==TRUE){ 
+    labels<-rownames(pca_mods_object$PCscores)
+    print(cbind(1:length(labels),labels))
+    cat("please type a number between 1 and",
+        length(labels),"\n")
+    ans_from=readline("which is the unloaded model?")
+    ans_from<-as.numeric(ans_from)
+    ans_to=readline("which is the target model?")
+    ans_to<-as.numeric(ans_to)
+if(GPA==TRUE){
+temp_PCA<-procSym(pca_mods_object$ori_array,scale=FALSE,CSinit = FALSE)$rotated
+just_rot_to<-rotonmat(temp_PCA[,,ans_to],temp_PCA[,,ans_to],pca_mods_object$ori_array[,,ans_from],scale=FALSE)}else{
+just_rot_to<-pca_mods_object$ori_array[,,ans_to]
+    } 
+    disp_to<-just_rot_to-pca_mods_object$ori_array[,,ans_from]
+    to_tab<-cbind(c(0:(dim(disp_to)[1]-1)),format(disp_to, scientific = TRUE))
+    
+    cat(paste("nnodes  ",dim(to_tab)[1], "\n", sep = ""), 
+        file = "disp_to.txt", 
+        append = TRUE, sep = "")
+    cat(paste("dim",dimx, dimy, dimz, "\n", sep = " "),
+        file = "disp_to.txt", 
+        append = TRUE, sep = "")
+    cat(paste("materials materials.txt","\n", sep = " "),
+        file = "disp_to.txt", 
+        append = TRUE, sep = "")
+    write.table(to_tab, 
+                file = "disp_to.txt", 
+                sep = " ", append = TRUE, quote = FALSE, row.names = FALSE, 
+                col.names = FALSE, na = "")
+  }else{
   labels<-rownames(pca_mods_object$PCscores)
   PCX<-pca_mods_object$PCscores[,PCx]
   PCY<-pca_mods_object$PCscores[,PCy]
@@ -65,12 +90,11 @@ export_displacement<-function(pca_mods_object, magnification=NULL,
   plot3d(pca_mods_object$ori_array[,,ans],aspect =FALSE,col=2,add=TRUE)
   plot3d(just_rot_PCXs,aspect =FALSE,col=3,add=TRUE)
   
-  just_rot_mean<-rotonmat(pca_mods_object$mshape,pca_mods_object$mshape,pca_mods_object$ori_array[,,ans])
-  just_rot_PCXs<-rotonmat(PCXs_s,PCXs_s,pca_mods_object$ori_array[,,ans])
-  just_rot_PCYs<-rotonmat(PCYs_s,PCYs_s,pca_mods_object$ori_array[,,ans])
+  just_rot_PCXs<-rotonmat(PCXs_s,PCXs_s,pca_mods_object$ori_array[,,ans],scale=FALSE)
+  just_rot_PCYs<-rotonmat(PCYs_s,PCYs_s,pca_mods_object$ori_array[,,ans],scale=FALSE)
   
-  disp_PCXs<-just_rot_PCXs-just_rot_mean
-  disp_PCYs<-just_rot_PCYs-just_rot_mean
+  disp_PCXs<-just_rot_PCXs-pca_mods_object$ori_array[,,ans]
+  disp_PCYs<-just_rot_PCYs-pca_mods_object$ori_array[,,ans]
   
   X_tab<-cbind(c(0:(dim(disp_PCXs)[1]-1)),format(disp_PCXs, scientific = TRUE))
   Y_tab<-cbind(c(0:(dim(disp_PCXs)[1]-1)),format(disp_PCYs, scientific = TRUE))
@@ -102,4 +126,5 @@ export_displacement<-function(pca_mods_object, magnification=NULL,
               file = "disp_PCYs.txt", 
               sep = " ", append = TRUE, quote = FALSE, row.names = FALSE, 
               col.names = FALSE, na = "")
+}
 }
