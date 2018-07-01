@@ -10,12 +10,15 @@
 #' @param from logical: if TRUE through an interactive way select the reference label.
 #' @param to logical: if TRUE through an interactive way select the reference label
 #' @param GPA logical: if TRUE a GPA step will be performed
+#' @param PCx numeric: PCx
+#' @param PCy numeric: PCy
 #' @author Antonio Profico, Paul O'Higgins
 #' @export
 
 export_displacement<-function(pca_mods_object, magnification=NULL,
                               dimx=0,dimy=0,dimz=0,
-                              from=NULL,to=NULL,GPA=NULL){
+                              from=NULL,to=NULL,GPA=NULL,PCx=1,PCy=2){
+  
   if(from==TRUE & to==TRUE){ 
     labels<-rownames(pca_mods_object$PCscores)
     print(cbind(1:length(labels),labels))
@@ -83,7 +86,7 @@ just_rot_to<-pca_mods_object$ori_array[,,ans_to]
   print(cbind(1:length(labels),labels))
   cat("please type a number between 1 and",
       length(labels),"\n")
-  ans<-readline("which is the unloaded model?")
+  ans=readline("which is the unloaded model?")
   ans<-as.numeric(ans)
   
   plot3d(PCXs_s,aspect =FALSE)
@@ -99,7 +102,7 @@ just_rot_to<-pca_mods_object$ori_array[,,ans_to]
   X_tab<-cbind(c(0:(dim(disp_PCXs)[1]-1)),format(disp_PCXs, scientific = TRUE))
   Y_tab<-cbind(c(0:(dim(disp_PCXs)[1]-1)),format(disp_PCYs, scientific = TRUE))
   
-  cat(paste("nnodes  ",dim(min_tab)[1], "\n", sep = ""), 
+  cat(paste("nnodes  ",dim(X_tab)[1], "\n", sep = ""), 
       file = "disp_PCXs.txt", 
       append = TRUE, sep = "")
   cat(paste("dim",dimx, dimy, dimz, "\n", sep = " "),
@@ -113,7 +116,7 @@ just_rot_to<-pca_mods_object$ori_array[,,ans_to]
               sep = " ", append = TRUE, quote = FALSE, row.names = FALSE, 
               col.names = FALSE, na = "")
   
-  cat(paste("nnodes  ",dim(min_tab)[1], "\n", sep = ""), 
+  cat(paste("nnodes  ",dim(Y_tab)[1], "\n", sep = ""), 
       file = "disp_PCYs.txt", 
       append = TRUE, sep = "")
   cat(paste("dim",dimx, dimy, dimz, "\n", sep = " "),
@@ -122,7 +125,7 @@ just_rot_to<-pca_mods_object$ori_array[,,ans_to]
   cat(paste("materials materials.txt","\n", sep = " "),
       file = "disp_PCYs.txt", 
       append = TRUE, sep = "")
-  write.table(X_tab, 
+  write.table(Y_tab, 
               file = "disp_PCYs.txt", 
               sep = " ", append = TRUE, quote = FALSE, row.names = FALSE, 
               col.names = FALSE, na = "")
