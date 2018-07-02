@@ -89,10 +89,6 @@ just_rot_to<-pca_mods_object$ori_array[,,ans_to]
   ans=readline("which is the unloaded model?")
   ans<-as.numeric(ans)
   
-  plot3d(PCXs_s,aspect =FALSE)
-  plot3d(pca_mods_object$ori_array[,,ans],aspect =FALSE,col=2,add=TRUE)
-  plot3d(just_rot_PCXs,aspect =FALSE,col=3,add=TRUE)
-  
   just_rot_PCXs<-rotonmat(PCXs_s,PCXs_s,pca_mods_object$ori_array[,,ans],scale=FALSE)
   just_rot_PCYs<-rotonmat(PCYs_s,PCYs_s,pca_mods_object$ori_array[,,ans],scale=FALSE)
   
