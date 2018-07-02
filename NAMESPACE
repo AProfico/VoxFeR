@@ -4,3 +4,5 @@ export(export_displacement)
 export(mod.fold)
 export(pca_mods)
 export(pca_shape_v)
+export(tps_displ)
+
